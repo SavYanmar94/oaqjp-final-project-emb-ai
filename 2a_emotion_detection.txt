@@ -1,0 +1,48 @@
+# Importiamo la libreria requests.
+# Questa libreria serve per fare richieste HTTP, ad esempio POST o GET, verso un servizio online.
+import requests
+
+
+# Definiamo una funzione chiamata emotion_detector.
+# La funzione riceve un parametro chiamato text_to_analyze.
+# text_to_analyze conterrà il testo che vogliamo analizzare.
+def emotion_detector(text_to_analyze):
+
+    # Salviamo dentro la variabile url l'indirizzo del servizio Watson NLP.
+    # Questo è l'endpoint a cui invieremo il testo da analizzare.
+    url = "https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict"
+
+    # Creiamo un dizionario Python chiamato headers.
+    # Gli headers contengono informazioni aggiuntive da inviare insieme alla richiesta.
+    # In questo caso diciamo al servizio quale modello usare per riconoscere le emozioni.
+    headers = {
+        "grpc-metadata-mm-model-id": "emotion_aggregated-workflow_lang_en_stock"
+    }
+
+    # Creiamo un dizionario Python chiamato input_json.
+    # Questo dizionario rappresenta il corpo della richiesta che invieremo al servizio.
+    # Il servizio si aspetta un JSON con questa struttura precisa:
+    # {
+    #     "raw_document": {
+    #         "text": testo_da_analizzare
+    #     }
+    # }
+    input_json = {
+        "raw_document": {
+            # Qui inseriamo il testo ricevuto come parametro della funzione.
+            # Quindi se chiamiamo emotion_detector("I am happy"),
+            # qui verrà inserito "I am happy".
+            "text": text_to_analyze
+        }
+    }
+
+    # Usiamo requests.post per inviare una richiesta POST al servizio Watson NLP.
+    # url indica dove mandare la richiesta.
+    # json=input_json invia il dizionario input_json come JSON.
+    # headers=headers invia le informazioni del modello da usare.
+    response = requests.post(url, json=input_json, headers=headers)
+
+    # La variabile response contiene la risposta ricevuta dal servizio.
+    # response.text prende il contenuto della risposta in formato testo.
+    # Il progetto chiede esplicitamente di restituire il text attribute della risposta.
+    return response.text
